@@ -26,23 +26,6 @@ app.get('/', (request, response) => {
 app.get('/entries', (request, response) => {
     return executeQuery('SELECT * FROM contacts')
         .then(contacts => {
-            return Promise.serial(contacts, contact => {
-                var options = { url: `/status/${contact.id}`, json: true };
-                return berlioz.cluster('phone').request(options)
-                    .then(status => {
-                        contact.status = status;
-                        contact.status.success = true;
-                    })
-                    .catch(reason => {
-                        console.log(reason);
-                        contact.status = {
-                            success: false
-                        };
-                    })
-                    .then(() => contact);
-            });
-        })
-        .then(contacts => {
             response.send(contacts);
         })
         .catch(reason => {
@@ -72,7 +55,7 @@ app.post('/entry', (request, response) => {
 })
 
 app.post('/call', (request, response) => {
-    var options = { 
+    var options = {
         url: '/perform',
         method: 'POST',
         body: request.body,

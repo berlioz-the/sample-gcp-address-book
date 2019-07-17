@@ -54,24 +54,6 @@ app.post('/entry', (request, response) => {
         })
 })
 
-app.post('/call', (request, response) => {
-    var options = {
-        url: '/perform',
-        method: 'POST',
-        body: request.body,
-        json: true
-    };
-    return berlioz.cluster('phone').request(options)
-        .then(() => {
-            response.send({ success: true });
-        })
-        .catch(reason => {
-            console.log(reason);
-            response.send({ success: false, error: reason });
-        })
-});
-
-
 function publishJob(msg)
 {
     const msgRequest = {
